@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   FileText,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 
 export function CitizenPortal() {
+
   const [activeTab, setActiveTab] = useState("report");
   const [reportType, setReportType] = useState("");
   const [title, setTitle] = useState("");
@@ -80,10 +82,9 @@ export function CitizenPortal() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8 px-2 sm:px-4">
+    <div>
       <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-4 sm:p-8 mx-auto">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Citizen Portal</h1>
-
         {/* Tabs */}
         <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 mb-6 justify-center">
           <button
@@ -107,123 +108,117 @@ export function CitizenPortal() {
             Track Reports
           </button>
         </div>
-
         {/* Report Issue Tab */}
         {activeTab === "report" && (
           <form onSubmit={handleSubmit} className="space-y-4 w-full">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Issue Type
-            </label>
-            <select
-              value={reportType}
-              onChange={(e) => setReportType(e.target.value)}
-              className="mt-1 block w-full border rounded-lg p-2"
-              required
-            >
-              <option value="">Select type</option>
-              <option value="infrastructure">Infrastructure</option>
-              <option value="sanitation">Sanitation</option>
-              <option value="safety">Safety</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Title
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full border rounded-lg p-2"
-              placeholder="Enter issue title"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 block w-full border rounded-lg p-2"
-              placeholder="Describe the issue"
-              rows={4}
-              required
-            ></textarea>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Location
-            </label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="mt-1 block w-full border rounded-lg p-2"
-              placeholder="Enter location"
-              required
-            />
-          </div>
-
-          {/* Photo Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Upload Photo (optional)
-            </label>
-            <div className="mt-1 flex items-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setPhoto(e.target.files[0])}
-                className="hidden"
-                id="photo-upload"
-              />
-              <label
-                htmlFor="photo-upload"
-                className="cursor-pointer flex items-center space-x-2 px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100"
-              >
-                <Upload size={18} />
-                <span>{photo ? "Change Photo" : "Upload Photo"}</span>
+            {/* ...existing report form code... */}
+            {/* (copy the form code from above) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Issue Type
               </label>
-              {photo && (
-                <div className="ml-3 flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">{photo.name}</span>
-                  <button
-                    type="button"
-                    onClick={() => setPhoto(null)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              )}
+              <select
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+                className="mt-1 block w-full border rounded-lg p-2"
+                required
+              >
+                <option value="">Select type</option>
+                <option value="infrastructure">Infrastructure</option>
+                <option value="sanitation">Sanitation</option>
+                <option value="safety">Safety</option>
+                <option value="other">Other</option>
+              </select>
             </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={submissionStatus === "submitting"}
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            {submissionStatus === "submitting"
-              ? "Submitting..."
-              : "Submit Report"}
-          </button>
-
-          {submissionStatus === "success" && (
-            <p className="text-green-600 text-sm mt-2">
-              Report submitted successfully!
-            </p>
-          )}
-        </form>
-      )}
-
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Title
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="mt-1 block w-full border rounded-lg p-2"
+                placeholder="Enter issue title"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="mt-1 block w-full border rounded-lg p-2"
+                placeholder="Describe the issue"
+                rows={4}
+                required
+              ></textarea>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Location
+              </label>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="mt-1 block w-full border rounded-lg p-2"
+                placeholder="Enter location"
+                required
+              />
+            </div>
+            {/* Photo Upload */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Upload Photo (optional)
+              </label>
+              <div className="mt-1 flex items-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setPhoto(e.target.files[0])}
+                  className="hidden"
+                  id="photo-upload"
+                />
+                <label
+                  htmlFor="photo-upload"
+                  className="cursor-pointer flex items-center space-x-2 px-3 py-2 border rounded-lg bg-gray-50 hover:bg-gray-100"
+                >
+                  <Upload size={18} />
+                  <span>{photo ? "Change Photo" : "Upload Photo"}</span>
+                </label>
+                {photo && (
+                  <div className="ml-3 flex items-center space-x-2">
+                    <span className="text-sm text-gray-600">{photo.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => setPhoto(null)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={submissionStatus === "submitting"}
+              className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              {submissionStatus === "submitting"
+                ? "Submitting..."
+                : "Submit Report"}
+            </button>
+            {submissionStatus === "success" && (
+              <p className="text-green-600 text-sm mt-2">
+                Report submitted successfully!
+              </p>
+            )}
+          </form>
+        )}
         {/* Track Reports Tab */}
         {activeTab === "track" && (
           <div className="space-y-4 w-full">
