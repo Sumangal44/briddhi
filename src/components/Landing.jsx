@@ -94,45 +94,61 @@ export function Landing({ onNavigate }) {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
-            {[
-              {
-                icon: MapPin,
-                title: "Smart Traffic Management",
-                description: "AI-powered congestion prediction, adaptive signals, and route optimization for smoother urban mobility.",
-                color: "from-blue-500 to-blue-600"
-              },
-              {
-                icon: Shield,
-                title: "Infrastructure Monitoring",
-                description: "Real-time detection of potholes, bridge damage, and streetlight failures using computer vision.",
-                color: "from-green-500 to-green-600"
-              },
-              {
-                icon: Recycle,
-                title: "Waste Management",
-                description: "Smart bin sensors, overflow prediction, and optimized collection routes for cleaner cities.",
-                color: "from-orange-500 to-orange-600"
-              },
-              {
-                icon: Bell,
-                title: "Emergency Response",
-                description: "Instant accident detection, disaster alerts, and automated emergency service coordination.",
-                color: "from-red-500 to-red-600"
-              },
-              {
-                icon: BarChart3,
-                title: "Predictive Analytics",
-                description: "AI-driven insights for urban planning, resource allocation, and sustainable city development.",
-                color: "from-purple-500 to-purple-600"
-              },
-              {
-                icon: Users,
-                title: "Citizen Engagement",
-                description: "Easy issue reporting, transparent tracking, and inclusive participation in city planning.",
-                color: "from-indigo-500 to-indigo-600"
-              }
-            ].map((feature, index) => (
-              <div key={index} className="bg-gray-50 rounded-xl p-6 sm:p-8 hover:shadow-lg transition-all transform hover:-translate-y-1">
+            {(
+              [
+                {
+                  icon: MapPin,
+                  title: "Smart Traffic Management",
+                  description: "AI-powered congestion prediction, adaptive signals, and route optimization for smoother urban mobility.",
+                  color: "from-blue-500 to-blue-600",
+                  page: "traffic"
+                },
+                {
+                  icon: Shield,
+                  title: "Infrastructure Monitoring",
+                  description: "Real-time detection of potholes, bridge damage, and streetlight failures using computer vision.",
+                  color: "from-green-500 to-green-600",
+                  page: "infrastructure"
+                },
+                {
+                  icon: Recycle,
+                  title: "Waste Management",
+                  description: "Smart bin sensors, overflow prediction, and optimized collection routes for cleaner cities.",
+                  color: "from-orange-500 to-orange-600",
+                  page: "waste"
+                },
+                {
+                  icon: Bell,
+                  title: "Emergency Response",
+                  description: "Instant accident detection, disaster alerts, and automated emergency service coordination.",
+                  color: "from-red-500 to-red-600",
+                  page: "emergency"
+                },
+                {
+                  icon: BarChart3,
+                  title: "Predictive Analytics",
+                  description: "AI-driven insights for urban planning, resource allocation, and sustainable city development.",
+                  color: "from-purple-500 to-purple-600",
+                  page: "analytics"
+                },
+                {
+                  icon: Users,
+                  title: "Citizen Engagement",
+                  description: "Easy issue reporting, transparent tracking, and inclusive participation in city planning.",
+                  color: "from-indigo-500 to-indigo-600",
+                  page: "engagement"
+                }
+              ]
+            ).map((feature, index) => (
+              <div
+                key={index}
+                className="bg-gray-50 rounded-xl p-6 sm:p-8 hover:shadow-lg transition-all transform hover:-translate-y-1 cursor-pointer"
+                onClick={() => onNavigate(feature.page)}
+                tabIndex={0}
+                role="button"
+                onKeyPress={e => { if (e.key === 'Enter' || e.key === ' ') onNavigate(feature.page); }}
+                aria-label={feature.title}
+              >
                 <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${feature.color} rounded-lg flex items-center justify-center mb-4 sm:mb-6`}>
                   <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
