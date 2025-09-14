@@ -27,7 +27,7 @@ export function Landing({ onNavigate }) {
                 <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                   Briddhi 🌱
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-600">"Growing Cities with Care"</p>
+                <p className="text-xs sm:text-sm text-gray-600">"hello world"</p>
               </div>
             </div>
             <div className="flex space-x-2 sm:space-x-4 mt-2 sm:mt-0">
