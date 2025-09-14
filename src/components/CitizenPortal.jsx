@@ -80,36 +80,37 @@ export function CitizenPortal() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Citizen Portal</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8 px-2 sm:px-4">
+      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-4 sm:p-8 mx-auto">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Citizen Portal</h1>
 
-      {/* Tabs */}
-      <div className="flex space-x-4 mb-6">
-        <button
-          onClick={() => setActiveTab("report")}
-          className={`px-4 py-2 rounded-lg font-medium ${
-            activeTab === "report"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700"
-          }`}
-        >
-          Report an Issue
-        </button>
-        <button
-          onClick={() => setActiveTab("track")}
-          className={`px-4 py-2 rounded-lg font-medium ${
-            activeTab === "track"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700"
-          }`}
-        >
-          Track Reports
-        </button>
-      </div>
+        {/* Tabs */}
+        <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 mb-6 justify-center">
+          <button
+            onClick={() => setActiveTab("report")}
+            className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium transition-colors duration-150 ${
+              activeTab === "report"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Report an Issue
+          </button>
+          <button
+            onClick={() => setActiveTab("track")}
+            className={`w-full sm:w-auto px-4 py-2 rounded-lg font-medium transition-colors duration-150 ${
+              activeTab === "track"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Track Reports
+          </button>
+        </div>
 
-      {/* Report Issue Tab */}
-      {activeTab === "report" && (
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
+        {/* Report Issue Tab */}
+        {activeTab === "report" && (
+          <form onSubmit={handleSubmit} className="space-y-4 w-full">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Issue Type
@@ -223,26 +224,25 @@ export function CitizenPortal() {
         </form>
       )}
 
-      {/* Track Reports Tab */}
-      {activeTab === "track" && (
-        <div className="space-y-4">
-          {userReports.map((report) => (
-            <div
-              key={report.id}
-              className="p-4 border rounded-lg bg-white shadow-sm"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-semibold">{report.title}</h3>
-                  <p className="text-sm text-gray-600">{report.description}</p>
-                  <p className="text-sm text-gray-500 mt-1">
+        {/* Track Reports Tab */}
+        {activeTab === "track" && (
+          <div className="space-y-4 w-full">
+            {userReports.map((report) => (
+              <div
+                key={report.id}
+                className="p-4 border rounded-lg bg-gray-50 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+              >
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold break-words">{report.title}</h3>
+                  <p className="text-sm text-gray-600 break-words">{report.description}</p>
+                  <p className="text-sm text-gray-500 mt-1 break-words">
                     Location: {report.location}
                   </p>
                   <p className="text-xs text-gray-400">
                     Submitted: {report.submittedAt}
                   </p>
                 </div>
-                <div>
+                <div className="flex flex-col items-end min-w-[120px]">
                   {report.status === "submitted" && (
                     <span className="flex items-center text-yellow-600">
                       <Clock size={16} className="mr-1" /> Submitted
@@ -259,18 +259,18 @@ export function CitizenPortal() {
                     </span>
                   )}
                 </div>
+                {report.photo && (
+                  <img
+                    src={report.photo}
+                    alt="Issue"
+                    className="mt-3 sm:mt-0 sm:ml-4 w-full sm:w-40 h-40 object-cover rounded-lg border"
+                  />
+                )}
               </div>
-              {report.photo && (
-                <img
-                  src={report.photo}
-                  alt="Issue"
-                  className="mt-3 w-full h-40 object-cover rounded-lg border"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
