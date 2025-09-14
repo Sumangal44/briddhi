@@ -12,27 +12,38 @@ function App() {
   const [auth, setAuth] = useState({ loggedIn: false, userType: null });
   const [currentPage, setCurrentPage] = useState("landing");
 
-  // After login, redirect to correct page
-  if (!auth.loggedIn && (currentPage === "dashboard" || currentPage === "citizen")) {
+
+  // Role-based access control for protected pages
+  const protectedPages = {
+    dashboard: "admin",
+    citizen: "citizen",
+    analytics: "admin",
+    emergency: "citizen",
+  };
+
+  // If not logged in and trying to access protected page, show AuthPage
+  if (!auth.loggedIn && Object.keys(protectedPages).includes(currentPage)) {
     return (
       <AuthPageWrapper
         onAuth={(userType) => {
           setAuth({ loggedIn: true, userType });
-          setCurrentPage(userType === "admin" ? "dashboard" : "citizen");
+          // After login, go to correct page for role
+          let nextPage = "landing";
+          if (userType === "admin" && ["dashboard", "analytics"].includes(currentPage)) nextPage = currentPage;
+          if (userType === "citizen" && ["citizen", "emergency"].includes(currentPage)) nextPage = currentPage;
+          setCurrentPage(nextPage);
         }}
-        userType={currentPage === "dashboard" ? "admin" : "citizen"}
+        userType={currentPage === "dashboard" || currentPage === "analytics" ? "admin" : "citizen"}
       />
     );
   }
 
-  // If logged in, always show correct page for role
-  if (auth.loggedIn && (currentPage === "dashboard" || currentPage === "citizen")) {
-    if (auth.userType === "admin" && currentPage !== "dashboard") {
-      setCurrentPage("dashboard");
-      return null;
-    }
-    if (auth.userType === "citizen" && currentPage !== "citizen") {
-      setCurrentPage("citizen");
+  // If logged in, block access to pages not allowed for role
+  if (auth.loggedIn && Object.keys(protectedPages).includes(currentPage)) {
+    const allowedRole = protectedPages[currentPage];
+    if (auth.userType !== allowedRole) {
+      // Redirect to allowed home page for role
+      setCurrentPage(auth.userType === "admin" ? "dashboard" : "citizen");
       return null;
     }
   }
