@@ -45,7 +45,7 @@ export function Navigation({ currentPage, onNavigate }) {
                     <span className="hidden xs:inline-block sm:block">{item.label}</span>
                   </button>
                   {/* Tooltip on hover (for icon-only or always) */}
-                  <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity shadow-lg min-w-max">
+                  <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-2 z-20 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity shadow-lg min-w-max sm:hidden">
                     {item.label}
                   </span>
                 </div>
