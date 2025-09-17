@@ -7,7 +7,7 @@
 
 **Project Link:** [https://github.com/Sumangal44/briddhi](https://github.com/Sumangal44/briddhi)
 
-**Project Deploy**  [https://briddhi.netlify.app](https://briddhi.netlify.app)  
+**Project Deploy**  [https://briddhi-delta.vercel.app](https://briddhi-delta.vercel.app) 
 
 **License:** MIT
 
