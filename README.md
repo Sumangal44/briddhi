@@ -2,9 +2,13 @@
 # Briddhi 🌱 – Growing Cities with Care
 
 **Team Name:** Aimers
-**Hackathon:** \[Hackathon Name]
+
+**Hackathon:** \[INSIGHT 2.0]
+
 **Project Link:** [https://github.com/Sumangal44/briddhi](https://github.com/Sumangal44/briddhi)
+
 **Project Deploy**  [https://briddhi.netlify.app](https://briddhi.netlify.app)  
+
 **License:** MIT
 
 ---
