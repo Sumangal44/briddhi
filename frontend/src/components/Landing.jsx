@@ -15,12 +15,51 @@ import {
 
 function Landing() {
   const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-sm border-b border-blue-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center py-3 sm:py-4 gap-3 sm:gap-0">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-xl flex items-center justify-center">
+                <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
+                  Briddhi 🌱
+                </h1>
+                <p className="text-xs sm:text-sm text-gray-600">
+                  "Growing Cities with Care"
+                </p>
+              </div>
+            </div>
+            <div className="flex space-x-2 sm:space-x-4 mt-2 sm:mt-0">
+              <button
+                onClick={() => navigate("/citizen")}
+                className="relative overflow-hidden px-6 py-3 rounded-lg text-blue-600 hover:text-amber-50 font-semibold 
+                  bg-transparent border border-blue-600 
+                  transition-all duration-500 group"
+              >
+                <span className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></span>
+                <span className="relative z-10">Citizen Portal</span>
+              </button>
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="px-4 sm:px-6 py-2 bg-gradient-to-r from-[#00A63E] to-[#00A63E] text-white rounded-lg hover:from-[#008c35] hover:to-[#006e29] transition-all transform hover:scale-105 text-sm sm:text-base"
+              >
+                Admin Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="py-12 sm:py-20 px-2 sm:px-4 md:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl  sm:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+          <h2 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             AI-Powered Smart City
             <span className="block text-2xl py-2 sm:text-4xl bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mt-1 sm:mt-2">
               Management Platform
@@ -130,7 +169,7 @@ function Landing() {
                   className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${feature.color} rounded-lg flex items-center justify-center mb-4 sm:mb-6`}
                 >
                   <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </div>{" "}
+                </div>
                 <h4 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
                   {feature.title}
                 </h4>
@@ -154,7 +193,7 @@ function Landing() {
               {[
                 "Traffic congestion costs Indian cities ₹1.47 lakh crore annually",
                 "Over 50% of urban infrastructure issues are detected reactively",
-                "urban areas contributing nearly 55 million tonnes of municipal solid waste annually",
+                "Urban areas contributing nearly 55 million tonnes of municipal solid waste annually",
                 "Citizens lack channels for meaningful city planning participation",
                 "Emergency response times in congested areas vary 14–17 minutes",
               ].map((problem, index) => (

@@ -47,7 +47,7 @@ function App() {
     localStorage.removeItem("user");
   };
 
-  // Show Navigation except on login/signup
+  // Hide Navigation on login/signup routes
   const hideNavRoutes = ["/login", "/signup"];
 
   return (
