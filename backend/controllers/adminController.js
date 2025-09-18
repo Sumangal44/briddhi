@@ -4,7 +4,20 @@ import issueModel from "../models/issueModel.js";
 const getAllIssues = async (req, res) => {
   try {
     const issues = await issueModel.find().populate("reportedBy", "name email phone").sort({ createdAt: -1 });
-    res.json({ success: true, issues });
+    // Ensure title and type are always present in response
+    const formattedIssues = issues.map(issue => ({
+      _id: issue._id,
+      title: issue.title || "",
+      type: issue.type || "other",
+      description: issue.description,
+      images: issue.images,
+      location: issue.location,
+      address: issue.address,
+      status: issue.status,
+      reportedBy: issue.reportedBy,
+      createdAt: issue.createdAt
+    }));
+    res.json({ success: true, issues: formattedIssues });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
