@@ -32,7 +32,7 @@ function App() {
       setUserRole(null);
     }
   }, []);
-
+ window.scrollTo(0.,0)
   const handleLogin = (data) => {
     setIsAuthenticated(true);
     setUserRole(data.user?.role || data.role);
