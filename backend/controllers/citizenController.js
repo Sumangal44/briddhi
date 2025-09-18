@@ -158,16 +158,16 @@ const submitIssue = async (req, res) => {
     const [lng, lat] = parsedLocation.coordinates;
     const address = await getAddressFromCoords(lat, lng);
 
-    // Handle multiple images
+    // Handle multiple images (Cloudinary URLs)
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = req.files.map(file => file.path); // Cloudinary URL or local path
+      images = req.files.map(file => file.path || file.url);
     }
     console.log("Images received:", images);
 
     const issue = await issueModel.create({
       description,
-      images, // save array of image URLs
+      images, // save array of Cloudinary URLs
       location: { type: "Point", coordinates: [lng, lat] },
       address,
       reportedBy: req.user._id,
