@@ -1,5 +1,4 @@
 // src/pages/InfrastructurePage.jsx
-import React from "react";
 import {
   Shield,
   Camera,

@@ -118,7 +118,7 @@ const initialAlerts = [
   },
 ];
 
-export function Emergency() {
+function Emergency() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [activeAlerts] = useState(initialAlerts);
 
@@ -366,4 +366,4 @@ export function Emergency() {
   );
 }
 
-
+export default Emergency;
