@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const IssueSchema = new mongoose.Schema({
-  title: { type: String, required: false },
-  type: { type: String, required: false },
+  title: { type: String, required: true },
+  type: { type: String, required: true },
   description: { type: String, required: true },
   images: [{ type: String }], // Cloudinary URLs
   location: {
