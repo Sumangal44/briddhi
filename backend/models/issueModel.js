@@ -10,7 +10,7 @@ const IssueSchema = new mongoose.Schema({
   },
   address: { type: String },
   status: { type: String, enum: ["pending", "in_progress", "resolved"], default: "pending" },
-  reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
   createdAt: { type: Date, default: Date.now }
 });
 
