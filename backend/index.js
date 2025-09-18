@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import connectDB from "./config/mongodb.js";
-import connectCloudinary from "./config/cloudinary.js";
+import cloudinary from "./config/cloudinary.js";
 import citizenRoutes from "./routes/citizenRoute.js";
 import adminRoutes from "./routes/adminRoute.js";
 import { Server } from "socket.io";
@@ -32,7 +32,8 @@ app.use(express.json());
 
 // database & cloudinary
 connectDB();
-connectCloudinary();
+// cloudinary config is loaded by import, no need to call as function
+// cloudinary config is loaded by import, no need to call as function
 
 // routes
 app.use("/api/citizen", citizenRoutes);

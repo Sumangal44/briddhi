@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const IssueSchema = new mongoose.Schema({
   description: { type: String, required: true },
-  imageUrl: { type: String },
+ images: [{ type: String }], // Cloudinary URLs
   location: {
     type: { type: String, enum: ["Point"], default: "Point" },
     coordinates: { type: [Number], default: [0, 0] } 
