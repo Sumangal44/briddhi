@@ -1,3 +1,16 @@
+// Get profile of logged-in user
+const getProfile = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 import bcrypt from "bcrypt";
 import validator from "validator";
 import jwt from "jsonwebtoken";
@@ -199,4 +212,4 @@ const getMyIssues = async (req, res) => {
 };
 
 
-export { registercitizen, logincitizen, submitIssue, getMyIssues };
+export { registercitizen, logincitizen, submitIssue, getMyIssues, getProfile };
