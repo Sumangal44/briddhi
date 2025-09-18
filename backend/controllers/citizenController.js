@@ -1,16 +1,4 @@
 // Get profile of logged-in user
-const getProfile = async (req, res) => {
-  try {
-    const user = await userModel.findById(req.user._id).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.status(200).json({ success: true, user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
 import bcrypt from "bcrypt";
 import validator from "validator";
 import jwt from "jsonwebtoken";
@@ -163,9 +151,9 @@ const logincitizen = async (req, res) => {
 
 const submitIssue = async (req, res) => {
   try {
-    const { description, location } = req.body;
-    if (!description || !location) {
-      return res.status(400).json({ message: "Description and live location required" });
+    const { title, type, description, location } = req.body;
+    if (!title || !type || !description || !location) {
+      return res.status(400).json({ message: "Title, type, description, and location are required" });
     }
     const parsedLocation = JSON.parse(location);
     const [lng, lat] = parsedLocation.coordinates;
@@ -179,6 +167,8 @@ const submitIssue = async (req, res) => {
     console.log("Images received:", images);
 
     const issue = await issueModel.create({
+      title,
+      type,
       description,
       images, // save array of Cloudinary URLs
       location: { type: "Point", coordinates: [lng, lat] },
@@ -208,6 +198,19 @@ const getMyIssues = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getProfile = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
