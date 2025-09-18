@@ -14,7 +14,7 @@ import {
   Trash2
 } from 'lucide-react';
 
-export function Analytics() {
+function Analytics() {
   const [activeMetric, setActiveMetric] = useState('traffic');
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -376,3 +376,5 @@ export function Analytics() {
     </div>
   );
 }
+
+export default Analytics;

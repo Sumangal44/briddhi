@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
+import api from "../api/axios";
 import {
   MapPin,
   AlertTriangle,
@@ -12,9 +13,10 @@ import {
   Activity,
 } from "lucide-react";
 
-export function Dashboard() {
+function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [activeIssues, setActiveIssues] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -22,50 +24,41 @@ export function Dashboard() {
   }, []);
 
   useEffect(() => {
-    // Simulate real-time issues
-    const issues = [
-      {
-        id: "1",
-        type: "traffic",
-        title: "Heavy congestion detected",
-        location: "MG Road Junction",
-        priority: "high",
-        status: "in-progress",
-        reportedAt: "10:30 AM",
-        description: "AI detected 40% increase in traffic density",
-      },
-      {
-        id: "2",
-        type: "infrastructure",
-        title: "Pothole identified",
-        location: "Brigade Road, KM 2.3",
-        priority: "medium",
-        status: "pending",
-        reportedAt: "9:15 AM",
-        description: "Computer vision detected road damage",
-      },
-      {
-        id: "3",
-        type: "waste",
-        title: "Bin overflow alert",
-        location: "Cubbon Park Gate",
-        priority: "medium",
-        status: "pending",
-        reportedAt: "11:45 AM",
-        description: "Sensor indicates 95% capacity reached",
-      },
-      {
-        id: "4",
-        type: "emergency",
-        title: "Minor accident reported",
-        location: "Koramangala 5th Block",
-        priority: "high",
-        status: "resolved",
-        reportedAt: "8:20 AM",
-        description: "Emergency services dispatched and resolved",
-      },
-    ];
-    setActiveIssues(issues);
+    let intervalId;
+    const fetchIssues = async () => {
+      try {
+        const res = await api.get("/admin/issues");
+        console.log("API response for /admin/issues:", res.data);
+        // Defensive: handle missing or malformed response
+        const issuesArr = Array.isArray(res.data.issues) ? res.data.issues : [];
+        if (!Array.isArray(res.data.issues)) {
+          setError("API response malformed: issues array missing");
+        } else if (issuesArr.length === 0) {
+          setError("No issues found. Check backend or database.");
+        } else {
+          setError("");
+        }
+        const issues = issuesArr.map((issue) => ({
+          id: issue._id,
+          type: issue.type || "other",
+          title: issue.title || issue.description,
+          location: issue.address || issue.location,
+          priority: issue.priority || "medium",
+          status: issue.status,
+          reportedAt: new Date(issue.createdAt).toLocaleTimeString(),
+          description: issue.description,
+          reportedBy: issue.reportedBy,
+        }));
+        setActiveIssues(issues);
+      } catch (err) {
+        setActiveIssues([]);
+        setError("Failed to fetch issues: " + (err?.response?.data?.message || err.message));
+        console.error("Failed to fetch issues", err);
+      }
+    };
+    fetchIssues();
+    intervalId = setInterval(fetchIssues, 5000); // Poll every 5 seconds
+    return () => clearInterval(intervalId);
   }, []);
 
   const metrics = [
@@ -160,6 +153,16 @@ export function Dashboard() {
     }
   };
 
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const token = localStorage.getItem("authToken");
+  const isAdmin = user && user.role === "admin" && !!token;
+
+  // If not admin, redirect to login page using SPA navigation
+  if (!isAdmin) {
+    window.location.replace("/login");
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-2 sm:px-4">
       <div className="max-w-7xl mx-auto w-full">
@@ -173,6 +176,11 @@ export function Dashboard() {
               <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
                 Real-time monitoring and AI-powered insights
               </p>
+              {error && (
+                <div className="mt-2 p-2 bg-red-100 text-red-700 rounded-lg text-xs">
+                  {error}
+                </div>
+              )}
             </div>
             <div className="text-left sm:text-right">
               <p className="text-xs sm:text-sm text-gray-500">Last updated</p>
@@ -184,7 +192,7 @@ export function Dashboard() {
         </div>
 
         {/* Metrics Grid */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {metrics.map((metric, index) => {
             const Icon = metric.icon;
             return (
@@ -217,7 +225,9 @@ export function Dashboard() {
                   <p className="text-xl sm:text-2xl font-bold text-gray-900">
                     {metric.value}
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-600 mt-1">{metric.title}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                    {metric.title}
+                  </p>
                 </div>
               </div>
             );
@@ -225,7 +235,7 @@ export function Dashboard() {
         </div>
 
         {/* Main Content Grid */}
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Live Issues */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100">
@@ -256,6 +266,9 @@ export function Dashboard() {
                             <div>
                               <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
                                 {issue.title}
+                                <span className="ml-2 px-2 py-1 rounded text-xs bg-gray-200 text-gray-700 font-normal">
+                                  {issue.type && issue.type !== "other" ? issue.type.charAt(0).toUpperCase() + issue.type.slice(1) : "Other"}
+                                </span>
                               </h3>
                               <p className="text-xs sm:text-sm text-gray-600 flex items-center flex-wrap gap-x-2 mt-1">
                                 <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -267,8 +280,9 @@ export function Dashboard() {
                               <p className="text-xs sm:text-sm text-gray-500 mt-2">
                                 {issue.description}
                               </p>
+                              <p className="text-xs text-gray-400 mt-1">Reported by: {issue.reportedBy?.name || "Unknown"}</p>
                             </div>
-                            <div className="flex flex-row sm:flex-col gap-2 sm:space-y-2">
+                            <div className="flex flex-row sm:flex-col gap-2 sm:space-y-2 items-center">
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium border ${getPriorityColor(
                                   issue.priority
@@ -281,10 +295,35 @@ export function Dashboard() {
                                   issue.status
                                 )}`}
                               >
-                                {issue.status
-                                  .replace("-", " ")
-                                  .toUpperCase()}
+                                {issue.status.replace("-", " ").toUpperCase()}
                               </span>
+                              {/* Status update dropdown */}
+                              <select
+                                value={issue.status}
+                                onChange={async (e) => {
+                                  const newStatus = e.target.value;
+                                  try {
+                                    const token = localStorage.getItem("authToken");
+                                    await api.put(`/admin/issues/${issue.id}/status`, 
+                                      { status: newStatus },
+                                      { headers: { Authorization: `Bearer ${token}` }}
+                                    );
+                                    setActiveIssues((prev) =>
+                                      prev.map((i) =>
+                                        i.id === issue.id ? { ...i, status: newStatus } : i
+                                      )
+                                    );
+                                  } catch (err) {
+                                    // Optionally show error
+                                    console.error("Failed to update status", err);
+                                  }
+                                }}
+                                className="ml-2 px-2 py-1 rounded border text-xs"
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                              </select>
                             </div>
                           </div>
                         </div>
@@ -341,19 +380,25 @@ export function Dashboard() {
               </h3>
               <div className="space-y-3 sm:space-y-4">
                 <div className="bg-white rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">Traffic Prediction</p>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
+                    Traffic Prediction
+                  </p>
                   <p className="font-medium text-gray-900 text-xs sm:text-base">
                     Heavy congestion expected on Outer Ring Road between 5-7 PM
                   </p>
                 </div>
                 <div className="bg-white rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">Infrastructure Alert</p>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
+                    Infrastructure Alert
+                  </p>
                   <p className="font-medium text-gray-900 text-xs sm:text-base">
                     3 streetlights may fail in Electronic City within 48 hours
                   </p>
                 </div>
                 <div className="bg-white rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">Resource Optimization</p>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
+                    Resource Optimization
+                  </p>
                   <p className="font-medium text-gray-900 text-xs sm:text-base">
                     Waste collection route efficiency can improve by 23%
                   </p>
@@ -368,7 +413,9 @@ export function Dashboard() {
               </h3>
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-gray-600">AI Monitoring</span>
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    AI Monitoring
+                  </span>
                   <div className="flex items-center space-x-1 sm:space-x-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <span className="text-xs sm:text-sm text-green-600 font-medium">
@@ -377,7 +424,9 @@ export function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-gray-600">Traffic Cameras</span>
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    Traffic Cameras
+                  </span>
                   <div className="flex items-center space-x-1 sm:space-x-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <span className="text-xs sm:text-sm text-green-600 font-medium">
@@ -386,7 +435,9 @@ export function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-gray-600">IoT Sensors</span>
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    IoT Sensors
+                  </span>
                   <div className="flex items-center space-x-1 sm:space-x-2">
                     <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                     <span className="text-xs sm:text-sm text-yellow-600 font-medium">
@@ -395,7 +446,9 @@ export function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-gray-600">Citizen App</span>
+                  <span className="text-xs sm:text-sm text-gray-600">
+                    Citizen App
+                  </span>
                   <div className="flex items-center space-x-1 sm:space-x-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <span className="text-xs sm:text-sm text-green-600 font-medium">
@@ -411,3 +464,5 @@ export function Dashboard() {
     </div>
   );
 }
+
+export default Dashboard;
