@@ -163,6 +163,7 @@ const submitIssue = async (req, res) => {
     if (req.files && req.files.length > 0) {
       images = req.files.map(file => file.path); // Cloudinary URL or local path
     }
+    console.log("Images received:", images);
 
     const issue = await issueModel.create({
       description,
