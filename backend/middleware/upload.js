@@ -3,11 +3,8 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
 
 const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "citizen_issues",
-    allowed_formats: ["jpg", "jpeg", "png"],
-  },
+  cloudinary: cloudinary,
+  params: { folder: "briddhi" },
 });
 
 const upload = multer({ storage });
