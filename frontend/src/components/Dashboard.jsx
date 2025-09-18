@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import  { useState, useEffect } from "react";
+import api from "../api/axios";
 import {
   MapPin,
   AlertTriangle,
@@ -16,6 +16,7 @@ import {
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [activeIssues, setActiveIssues] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -26,17 +27,22 @@ function Dashboard() {
     let intervalId;
     const fetchIssues = async () => {
       try {
-        const token = localStorage.getItem("authToken");
-        const res = await axios.get("/admin/issues", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/admin/issues");
+        console.log("API response for /admin/issues:", res.data);
         // Defensive: handle missing or malformed response
         const issuesArr = Array.isArray(res.data.issues) ? res.data.issues : [];
+        if (!Array.isArray(res.data.issues)) {
+          setError("API response malformed: issues array missing");
+        } else if (issuesArr.length === 0) {
+          setError("No issues found. Check backend or database.");
+        } else {
+          setError("");
+        }
         const issues = issuesArr.map((issue) => ({
           id: issue._id,
           type: issue.type || "other",
           title: issue.title || issue.description,
-          location: issue.address,
+          location: issue.address || issue.location,
           priority: issue.priority || "medium",
           status: issue.status,
           reportedAt: new Date(issue.createdAt).toLocaleTimeString(),
@@ -46,6 +52,7 @@ function Dashboard() {
         setActiveIssues(issues);
       } catch (err) {
         setActiveIssues([]);
+        setError("Failed to fetch issues: " + (err?.response?.data?.message || err.message));
         console.error("Failed to fetch issues", err);
       }
     };
@@ -150,25 +157,10 @@ function Dashboard() {
   const token = localStorage.getItem("authToken");
   const isAdmin = user && user.role === "admin" && !!token;
 
+  // If not admin, redirect to login page using SPA navigation
   if (!isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900">
-            Admin access required
-          </h2>
-          <p className="text-gray-600 mb-6">
-            You must be signed in as an admin to view the dashboard.
-          </p>
-          <a
-            href="/login"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            Sign In as Admin
-          </a>
-        </div>
-      </div>
-    );
+    window.location.replace("/login");
+    return null;
   }
 
   return (
@@ -184,6 +176,11 @@ function Dashboard() {
               <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
                 Real-time monitoring and AI-powered insights
               </p>
+              {error && (
+                <div className="mt-2 p-2 bg-red-100 text-red-700 rounded-lg text-xs">
+                  {error}
+                </div>
+              )}
             </div>
             <div className="text-left sm:text-right">
               <p className="text-xs sm:text-sm text-gray-500">Last updated</p>
@@ -307,9 +304,10 @@ function Dashboard() {
                                   const newStatus = e.target.value;
                                   try {
                                     const token = localStorage.getItem("authToken");
-                                    await axios.put(`/admin/issues/${issue.id}/status`, { status: newStatus }, {
-                                      headers: { Authorization: `Bearer ${token}` },
-                                    });
+                                    await api.put(`/admin/issues/${issue.id}/status`, 
+                                      { status: newStatus },
+                                      { headers: { Authorization: `Bearer ${token}` }}
+                                    );
                                     setActiveIssues((prev) =>
                                       prev.map((i) =>
                                         i.id === issue.id ? { ...i, status: newStatus } : i
