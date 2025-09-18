@@ -51,7 +51,7 @@ Briddhi provides a unified platform for city authorities, citizens, and emergenc
 * **AI/ML Services:** Python + FastAPI + PyTorch/TensorFlow
 * **Realtime:** Socket.IO
 * **Deployment:** Docker Compose / Cloud (Render, Vercel, or AWS)
-
+* **Object Detection Model:** COCO-SSD
 ---
 
 ## 📁 Folder Structure
@@ -126,6 +126,7 @@ briddhi/
 
 
 ---
+
 
 ## 📄 License
 
