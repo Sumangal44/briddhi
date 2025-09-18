@@ -151,20 +151,22 @@ const logincitizen = async (req, res) => {
 const submitIssue = async (req, res) => {
   try {
     const { description, location } = req.body;
-
     if (!description || !location) {
       return res.status(400).json({ message: "Description and live location required" });
     }
-
-    const parsedLocation = JSON.parse(location); // if sent as string
+    const parsedLocation = JSON.parse(location);
     const [lng, lat] = parsedLocation.coordinates;
     const address = await getAddressFromCoords(lat, lng);
 
-    const imageUrl = req.file ? req.file.path : null; // Cloudinary URL
+    // Handle multiple images
+    let images = [];
+    if (req.files && req.files.length > 0) {
+      images = req.files.map(file => file.path); // Cloudinary URL or local path
+    }
 
     const issue = await issueModel.create({
       description,
-      imageUrl,
+      images, // save array of image URLs
       location: { type: "Point", coordinates: [lng, lat] },
       address,
       reportedBy: req.user._id,

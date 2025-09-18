@@ -14,5 +14,5 @@ const IssueSchema = new mongoose.Schema({
 
 IssueSchema.index({ location: "2dsphere" });
 
-const issueModel = mongoose.model.Issue || mongoose.model("Issue", IssueSchema);
+const issueModel = mongoose.models.Issue || mongoose.model("Issue", IssueSchema);
 export default issueModel;
