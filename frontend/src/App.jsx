@@ -48,6 +48,7 @@ function App() {
         />
       );
     }
+    window.scrollTo(0.,0)
     // Render actual pages
     switch (currentPage) {
       case "landing":
