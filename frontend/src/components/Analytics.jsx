@@ -44,7 +44,6 @@ export function Analytics() {
     { name: 'Roads', value: 78, color: '#F59E0B' },
     { name: 'Streetlights', value: 95, color: '#10B981' },
     { name: 'Traffic Signals', value: 82, color: '#10B981' },
-    { name: 'Bridges', value: 89, color: '#10B981' },
     { name: 'Drainage', value: 65, color: '#F59E0B' },
   ];
 
@@ -142,12 +141,12 @@ export function Analytics() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-2 sm:px-4">
-      <div className="max-w-7xl mx-auto w-full">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-2 sm:px-4 ">
+      <div className="max-w-7xl mx-auto w-full ">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-            <div>
+            <div >
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">AI Analytics & Insights</h1>
               <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">Predictive intelligence for smarter city management</p>
             </div>
@@ -165,7 +164,7 @@ export function Analytics() {
           {kpis.map((kpi, index) => {
             const Icon = kpi.icon;
             return (
-              <div key={index} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
+              <div key={index} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 hover:scale-95 transition-all duration-100  hover:shadow-2xl">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
@@ -285,9 +284,9 @@ export function Analytics() {
               
               <div className="space-y-3 sm:space-y-4">
                 {predictions.map((prediction, index) => (
-                  <div key={index} className="bg-white rounded-lg p-3 sm:p-4">
-                    <div className="flex items-start justify-between mb-1 sm:mb-2">
-                      <div>
+                  <div key={index} className="bg-white rounded-lg p-3 sm:p-4 hover:scale-95 transition-all duration-100  hover:shadow-2xl">
+                    <div className="flex items-start justify-between mb-1 sm:mb-2 ">
+                      <div >
                         <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{prediction.type}</h4>
                         <p className="text-xs sm:text-sm text-gray-600 flex items-center space-x-1">
                           <MapPin className="w-3 h-3" />
