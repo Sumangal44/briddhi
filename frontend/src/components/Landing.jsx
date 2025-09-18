@@ -33,9 +33,13 @@ export function Landing({ onNavigate }) {
             <div className="flex space-x-2 sm:space-x-4 mt-2 sm:mt-0">
               <button
                 onClick={() => onNavigate('citizen')}
-                className="px-3 sm:px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors text-sm sm:text-base"
+                className="relative overflow-hidden px-6 py-3 rounded-lg text-blue-600 hover:text-amber-50 font-semibold 
+  bg-transparent border border-blue-600 
+  transition-all duration-500 group"
               >
-                Citizen Portal
+                 <span className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></span>
+                 <span className="relative z-10"> Citizen Portal</span>
+               
               </button>
               <button
                 onClick={() => onNavigate('dashboard')}
