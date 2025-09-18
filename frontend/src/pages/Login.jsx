@@ -34,7 +34,7 @@ const Login = ({ onLogin }) => {
     }
 
     try {
-      const res = await api.post("/citizen/login", {
+  const res = await api.post("/citizen/login", {
         email: form.email,
         phone: form.phone,
         password: form.password,
