@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import issueModel from "../models/issueModel.js";
 import fetch from "node-fetch";
+import streamifier from "streamifier";
+import cloudinary from "../config/cloudinary.js";
 const createToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, {
     expiresIn: "15d",
@@ -159,12 +161,30 @@ const submitIssue = async (req, res) => {
     const [lng, lat] = parsedLocation.coordinates;
     const address = await getAddressFromCoords(lat, lng);
 
-    // Handle multiple images (Cloudinary URLs)
+    // Handle multiple images (upload buffers to Cloudinary and collect URLs)
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = req.files.map(file => file.path || file.url);
+      const uploadPromises = req.files.map((file) => {
+        return new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "citizen-issues", transformation: [{ width: 1200, height: 1200, crop: "limit" }] },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result.secure_url || result.url);
+            }
+          );
+          streamifier.createReadStream(file.buffer).pipe(uploadStream);
+        });
+      });
+
+      try {
+        images = await Promise.all(uploadPromises);
+      } catch (uploadErr) {
+        console.error("Cloudinary upload error:", uploadErr);
+        return res.status(500).json({ message: "File upload failed" });
+      }
     }
-    console.log("Images received:", images);
+    console.log("Images uploaded:", images);
 
     const issue = await issueModel.create({
       title,

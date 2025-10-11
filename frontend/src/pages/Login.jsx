@@ -12,6 +12,7 @@ const Login = ({ onLogin }) => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -27,18 +28,20 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setLoading(true);
 
     if ((!form.email && !form.phone) || !form.password) {
       setError("Email or phone and password are required.");
+      setLoading(false);
       return;
     }
 
     try {
-  const res = await api.post("/citizen/login", {
+      const res = await api.post("/citizen/login", {
         email: form.email,
         phone: form.phone,
         password: form.password,
-        role: form.role
+        role: form.role,
       });
       const data = res.data;
       // Save token and user info in localStorage
@@ -46,9 +49,18 @@ const Login = ({ onLogin }) => {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       setSuccess("Login successful!");
-      setForm({ email: "", phone: "", password: "" });
+      // Reset only credentials but keep role selection
+      setForm((prev) => ({ ...prev, email: "", phone: "", password: "" }));
 
-  if (onLogin) onLogin(data); // callback to update App state
+      if (onLogin) onLogin(data); // callback to update App state
+
+      // Navigate user based on role
+      const role = data.user?.role || form.role;
+      if (role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/citizen");
+      }
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
@@ -57,6 +69,7 @@ const Login = ({ onLogin }) => {
       }
       console.error(err);
     }
+    setLoading(false);
   };
 
   return (
@@ -123,9 +136,12 @@ const Login = ({ onLogin }) => {
           {success && <div className="text-green-600 text-sm">{success}</div>}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-all"
+            className={`w-full bg-blue-600 text-white py-2 rounded-lg font-semibold transition-all ${
+              loading ? "opacity-60 cursor-not-allowed" : "hover:bg-blue-700"
+            }`}
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <div className="mt-4 text-center text-sm text-gray-600">

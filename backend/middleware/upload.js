@@ -1,15 +1,8 @@
 import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import cloudinary from "../config/cloudinary.js";
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: "citizen-issues",
-        allowed_formats: ["jpg", "jpeg", "png", "webp"],
-        transformation: [{ width: 1200, height: 1200, crop: "limit" }],
-    },
-});
+// Use memory storage and upload buffers to Cloudinary in the controller.
+// This avoids compatibility issues between cloudinary v2 and older multer-storage-cloudinary.
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
 export default upload;
