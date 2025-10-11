@@ -155,11 +155,39 @@ const submitIssue = async (req, res) => {
   try {
     const { title, type, description, location } = req.body;
     if (!title || !type || !description || !location) {
-      return res.status(400).json({ message: "Title, type, description, and location are required" });
+      return res.status(400).json({ message: "Title, type, description, and location (or manual address) are required" });
     }
-    const parsedLocation = JSON.parse(location);
-    const [lng, lat] = parsedLocation.coordinates;
-    const address = await getAddressFromCoords(lat, lng);
+
+    // location may be a JSON-stringified GeoJSON Point OR a manual address string
+    let coords = [0, 0];
+    let address = req.body.address || "";
+    try {
+      let parsedLocation = null;
+      if (typeof location === "string") {
+        const trimmed = location.trim();
+        if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+          parsedLocation = JSON.parse(trimmed);
+        }
+      } else if (typeof location === "object") {
+        parsedLocation = location;
+      }
+
+      if (parsedLocation && parsedLocation.coordinates && Array.isArray(parsedLocation.coordinates)) {
+        const [lng, lat] = parsedLocation.coordinates;
+        coords = [lng, lat];
+        // set human readable address from coords (reverse geocode)
+        address = await getAddressFromCoords(lat, lng);
+      } else {
+        // treat `location` as a manual address string (or fallback)
+        if (!address || address === "") address = typeof location === "string" ? location : "Unknown location";
+        coords = [0, 0];
+      }
+    } catch (parseErr) {
+      console.error("Location parse error:", parseErr);
+      // fallback to manual address if provided
+      if (!address || address === "") address = typeof location === "string" ? location : "Unknown location";
+      coords = [0, 0];
+    }
 
     // Handle multiple images (upload buffers to Cloudinary and collect URLs)
     let images = [];
@@ -191,7 +219,7 @@ const submitIssue = async (req, res) => {
       type,
       description,
       images, // save array of Cloudinary URLs
-      location: { type: "Point", coordinates: [lng, lat] },
+      location: { type: "Point", coordinates: coords },
       address,
       reportedBy: req.user._id,
     });
