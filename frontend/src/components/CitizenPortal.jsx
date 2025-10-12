@@ -56,7 +56,7 @@ function CitizenPortal() {
         if (merged.some((r) => r._highlight)) {
           setTimeout(() => {
             setUserReports((cur) => cur.map((x) => ({ ...x, _highlight: false })));
-          }, 5000);
+          }, 200000);
         }
 
         setAuthError(false);
@@ -75,7 +75,7 @@ function CitizenPortal() {
 
     // initial + polling
     fetchReports();
-    intervalId = setInterval(fetchReports, 5000);
+    intervalId = setInterval(fetchReports, 200000);
     pollingRef.current = intervalId;
     return () => clearInterval(intervalId);
   }, []);
