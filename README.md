@@ -3,7 +3,6 @@
 
 **Team Name:** Aimers
 
-**Hackathon:** \[INSIGHT 2.0]
 
 **Project Link:** [https://github.com/Sumangal44/briddhi](https://github.com/Sumangal44/briddhi)
 
